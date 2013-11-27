@@ -1,0 +1,39 @@
+<project name="inquisitor" default="war">
+
+    <property file="${basedir}/build.properties"/>
+    <property name="resources.dir" value="${basedir}/resources"/>
+    <property name="source.dir" value="${basedir}/src"/>
+    <property name="lib.dir" value="${basedir}/lib"/>
+    <property name="build.dir" value="${basedir}/build"/>
+    <property name="build.dir" value="${basedir}/build"/>
+    <property name="classes.dir" value="${build.dir}/classes"/>
+    <property name="web.dir" value="${basedir}/web"/>
+
+    <path id="jboss-lib">
+        <fileset dir="${lib.dir}">
+            <include name="*.jar"/>
+        </fileset>
+    </path>
+
+    <target name="init">
+        <delete dir="${build.dir}"/>
+        <mkdir dir="${classes.dir}"/>
+    </target>
+
+    <target name="compile" depends="init">
+        <javac srcdir="${source.dir}" destdir="${classes.dir}" debug="true">
+            <classpath refid="jboss-lib"/>
+        </javac>
+    </target>
+
+    <target name="war" depends="compile">
+        <war warfile="${build.dir}/${ant.project.name}.war" webxml="${web.dir}/WEB-INF/web.xml">
+            <classes dir="${classes.dir}"/>
+            <lib dir="${lib.dir}"/>
+            <fileset dir="${web.dir}">
+                <exclude name="${web.dir}/WEB-INF/web.xml"/>
+            </fileset>
+        </war>
+    </target>
+
+</project>
