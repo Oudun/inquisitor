@@ -1,11 +1,10 @@
 package org.helico.inquisitor;
 
-import org.apache.log4j.Logger;
-
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.helico.inquisitor.util.Logger;
 
 /**
  * Created by IntelliJ IDEA.
