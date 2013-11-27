@@ -29,7 +29,9 @@
     <target name="war" depends="compile">
         <war warfile="${build.dir}/${ant.project.name}.war" webxml="${web.dir}/WEB-INF/web.xml">
             <classes dir="${classes.dir}"/>
-            <lib dir="${lib.dir}"/>
+            <lib dir="${lib.dir}">
+		<exclude name="servlet-api-2.5.jar"/>
+	</lib>
             <fileset dir="${web.dir}">
                 <exclude name="${web.dir}/WEB-INF/web.xml"/>
             </fileset>

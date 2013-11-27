@@ -4,8 +4,9 @@
          xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
          version="2.5">
 
-    <display-name>Online Library server stub</display-name>
+    <display-name>Web based Quizz maker</display-name>
 
+    <!--
     <servlet>
         <servlet-name>mainServlet</servlet-name>
         <servlet-class>org.helico.inquisitor.MainServlet</servlet-class>
@@ -19,5 +20,6 @@
         <servlet-name>mainServlet</servlet-name>
         <url-pattern>/*</url-pattern>
     </servlet-mapping>
+    -->
 
 </web-app>
