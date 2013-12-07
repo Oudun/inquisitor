@@ -1,6 +1,7 @@
 package org.helico.inquisitor.impl;
 
 import org.helico.inquisitor.Dao;
+import org.helico.inquisitor.model.Item;
 import org.helico.inquisitor.model.Property;
 import org.helico.inquisitor.model.PropertyValue;
 import org.helico.inquisitor.model.Theme;
@@ -148,23 +149,132 @@ public class DaoImpl implements Dao {
         }
     }
 
+    /////////  Property Values methods ///////////////
+
     @Override
     public List<PropertyValue> getPropertyValues(String themeId) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        List<PropertyValue> result = new ArrayList<PropertyValue>();
+        try {
+            PreparedStatement ps = conn.prepareStatement("SELECT * FROM property_value WHERE property_id=?");
+            ps.setString(1, themeId);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                PropertyValue propertyValue = new PropertyValue (rs.getLong(1), rs.getLong(2), rs.getString(3));
+                result.add(propertyValue);
+            }
+        } catch (Exception e) {
+            logger.error("Can not prepare statement", e);
+        } finally {
+            return result;
+        }
     }
 
     @Override
-    public void savePropertyValue(String id, String themeId, String name) {
-        //To change body of implemented methods use File | Settings | File Templates.
+    public void savePropertyValue(String id, String propertyId, String name) {
+        try {
+            PreparedStatement ps;
+            if (id==null||"null".equals(id)) {
+                ps = conn.prepareStatement("INSERT INTO property_value VALUES (NULL, ?, ?)");
+                ps.setInt(1, Integer.parseInt(propertyId));
+                ps.setString(2, name);
+            } else {
+                ps = conn.prepareStatement("UPDATE property_value SET name=? WHERE id=?");
+                ps.setString(1, name);
+                ps.setString(2, id);
+            }
+            ps.execute();
+        } catch (Exception e) {
+            logger.error("Can not prepare statement", e);
+        }
     }
 
     @Override
     public void deletePropertyValue(String id) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        try {
+            PreparedStatement ps = conn.prepareStatement("DELETE FROM property_value WHERE id=?");
+            ps.setString(1, id);
+            ps.execute();
+        } catch (Exception e) {
+            logger.error("Can not prepare statement", e);
+        }
     }
 
     @Override
     public PropertyValue getPropertyValue(String id) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        PropertyValue propertyValue = null;
+        try {
+            PreparedStatement ps = conn.prepareStatement("SELECT * FROM property_value WHERE id=?");
+            ps.setString(1, id);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                propertyValue = new PropertyValue (rs.getLong(1), rs.getLong(2), rs.getString(3));
+            }
+        } catch (Exception e) {
+            logger.error("Can not prepare statement", e);
+        } finally {
+            return propertyValue;
+        }
     }
+
+    @Override
+    public List<Item> getItems(String themeId) {
+        List<Item> result = new ArrayList<Item>();
+        try {
+            PreparedStatement ps = conn.prepareStatement("SELECT * FROM item WHERE theme_id=?");
+            ps.setString(1, themeId);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Item item = new Item (rs.getLong(1), rs.getLong(2), rs.getString(3));
+                result.add(item);
+            }
+        } catch (Exception e) {
+            logger.error("Can not prepare statement", e);
+        } finally {
+            return result;
+        }
+    }
+
+    @Override
+    public void saveItem(String id, String themeId, String name) {
+        try {
+            PreparedStatement ps;
+            if (id==null||"null".equals(id)) {
+                ps = conn.prepareStatement("INSERT INTO item VALUES (NULL, ?, ?)");
+                ps.setInt(1, Integer.parseInt(themeId));
+                ps.setString(2, name);
+            } else {
+                ps = conn.prepareStatement("UPDATE item SET name=? WHERE id=?");
+                ps.setString(1, name);
+                ps.setString(2, id);
+            }
+            ps.execute();
+        } catch (Exception e) {
+            logger.error("Can not prepare statement", e);
+        }
+    }
+
+    @Override
+    public void deleteItem(String id) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public Item getItem(String id) {
+        Item item = null;
+        try {
+            PreparedStatement ps = conn.prepareStatement("SELECT * FROM item WHERE id=?");
+            ps.setString(1, id);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                item = new Item (rs.getLong(1), rs.getLong(2), rs.getString(3));
+            }
+        } catch (Exception e) {
+            logger.error("Can not prepare statement", e);
+        } finally {
+            return item;
+        }
+    }
+
+
+
 }

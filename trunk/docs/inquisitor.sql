@@ -42,7 +42,7 @@ DROP TABLE IF EXISTS `property_value` ;
 CREATE  TABLE IF NOT EXISTS `property_value` (
   `id` INT NOT NULL AUTO_INCREMENT ,
   `property_id` INT NOT NULL ,
-  `name` VARCHAR(45) NULL ,
+  `name` TEXT NULL ,
   PRIMARY KEY (`id`) ,
   INDEX `fk_property_value_property1_idx` (`property_id` ASC) ,
   CONSTRAINT `fk_property_value_property1`
