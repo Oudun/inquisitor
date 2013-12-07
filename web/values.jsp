@@ -14,8 +14,8 @@
         for (PropertyValue value : values) {
     %>
     <tr>
-        <td><b><%=value.getName()%></b></td>
-        <td><a href="properties.jsp?action=delete&value=<%=value.getId()%>&theme=<%=value.getThemeId()%>">
+        <td width="480"><b><%=value.getName()%></b></td>
+        <td><a href="values.jsp?action=delete&value=<%=value.getId()%>&property=<%=value.getPropertyId()%>">
             Delete</a>
         </td>
         <td><a href="values.jsp?value=<%=value.getId()%>">
@@ -27,6 +27,6 @@
     <%
         }
     %>
-    <td><a href="value_create.jsp?theme=<%=request.getParameter("theme")%>">Create new value</a></td>
+    <td><a href="value_create.jsp?property=<%=request.getParameter("property")%>">Create new value</a></td>
     <td colspan="3">&nbsp;</td>
 </table>

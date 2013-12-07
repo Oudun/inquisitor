@@ -1,5 +1,6 @@
 package org.helico.inquisitor;
 
+import org.helico.inquisitor.model.Item;
 import org.helico.inquisitor.model.Property;
 import org.helico.inquisitor.model.PropertyValue;
 import org.helico.inquisitor.model.Theme;
@@ -24,9 +25,14 @@ public interface Dao {
     public void deleteProperty(String id);
     public Property getProperty(String id);
 
-    public List<PropertyValue> getPropertyValues(String themeId);
-    public void savePropertyValue(String id, String themeId, String name);
+    public List<PropertyValue> getPropertyValues(String propertyId);
+    public void savePropertyValue(String id, String propertyId, String name);
     public void deletePropertyValue(String id);
     public PropertyValue getPropertyValue(String id);
+
+    public List<Item> getItems(String themeId);
+    public void saveItem(String id, String themeId, String name);
+    public void deleteItem(String id);
+    public Item getItem(String id);
 
 }

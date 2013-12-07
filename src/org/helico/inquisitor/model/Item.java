@@ -3,24 +3,24 @@ package org.helico.inquisitor.model;
 /**
  * Created with IntelliJ IDEA.
  * User: Denis
- * Date: 07.12.13
- * Time: 21:57
+ * Date: 08.12.13
+ * Time: 0:57
  * To change this template use File | Settings | File Templates.
- CREATE  TABLE IF NOT EXISTS `property_value` (
+ CREATE  TABLE IF NOT EXISTS `item` (
  `id` INT NOT NULL AUTO_INCREMENT ,
- `property_id` INT NOT NULL ,
+ `theme_id` INT NOT NULL ,
  `name` VARCHAR(45) NULL ,
  PRIMARY KEY (`id`) ,
- INDEX `fk_property_value_property1_idx` (`property_id` ASC) ,
- CONSTRAINT `fk_property_value_property1`
- FOREIGN KEY (`property_id` )
- REFERENCES `property` (`id` )
- ON DELETE CASCADE
+ INDEX `fk_item_theme1_idx` (`theme_id` ASC) ,
+ CONSTRAINT `fk_item_theme1`
+ FOREIGN KEY (`theme_id` )
+ REFERENCES `theme` (`id` )
+ ON DELETE NO ACTION
  ON UPDATE NO ACTION)
  ENGINE = InnoDB;
 
  */
-public class PropertyValue {
+public class Item {
 
     public long getId() {
         return id;
@@ -30,12 +30,12 @@ public class PropertyValue {
         this.id = id;
     }
 
-    public long getPropertyId() {
-        return propertyId;
+    public long getThemeId() {
+        return themeId;
     }
 
-    public void setPropertyId(long propertyId) {
-        this.propertyId = propertyId;
+    public void setThemeId(long themeId) {
+        this.themeId = themeId;
     }
 
     public String getName() {
@@ -46,15 +46,15 @@ public class PropertyValue {
         this.name = name;
     }
 
-    public PropertyValue(long id, long propertyId, String name) {
+    public Item(long id, long themeId, String name) {
         this.id = id;
-        this.propertyId = propertyId;
+        this.themeId = themeId;
         this.name = name;
     }
 
     private long id;
 
-    private long propertyId;
+    private long themeId;
 
     private String name;
 
