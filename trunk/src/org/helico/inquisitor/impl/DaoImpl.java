@@ -45,8 +45,39 @@ public class DaoImpl implements Dao {
             }
         } catch (Exception e) {
             logger.error("Can not prepare statement", e);
+        } finally {
+            return result;
         }
-        return result;
     }
+
+    @Override
+    public void saveTheme(String id, String name) {
+        try {
+            PreparedStatement ps;
+            if (id==null||"null".equals(id)) {
+                ps = conn.prepareStatement("INSERT INTO theme VALUES (NULL, ?)");
+                ps.setString(1, name);
+            } else {
+                ps = conn.prepareStatement("UPDATE theme SET name=? WHERE id=?");
+                ps.setInt(1, Integer.parseInt(id));
+                ps.setString(2, name);
+            }
+            ps.execute();
+        } catch (Exception e) {
+            logger.error("Can not prepare statement", e);
+        }
+    }
+
+    @Override
+    public void deleteTheme(String id) {
+        try {
+            PreparedStatement ps = conn.prepareStatement("DELETE FROM theme WHERE id=?");
+            ps.setString(1, id);
+            ps.execute();
+        } catch (Exception e) {
+            logger.error("Can not prepare statement", e);
+        }
+    }
+
 
 }

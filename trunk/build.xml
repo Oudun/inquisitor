@@ -1,4 +1,4 @@
-<project name="inquisitor" default="war">
+<project name="inquisitor" default="expand">
 
     <property file="${basedir}/build.properties"/>
     <property name="resources.dir" value="${basedir}/resources"/>
@@ -8,6 +8,8 @@
     <property name="build.dir" value="${basedir}/build"/>
     <property name="classes.dir" value="${build.dir}/classes"/>
     <property name="web.dir" value="${basedir}/web"/>
+    <property name="war.file" value="${build.dir}/${ant.project.name}.war"/>
+    <property name="deploy.dir" value="C:\\apache-tomcat-6.0.35\\webapps\\${ant.project.name}"/>
 
     <path id="jboss-lib">
         <fileset dir="${lib.dir}">
@@ -27,15 +29,19 @@
     </target>
 
     <target name="war" depends="compile">
-        <war warfile="${build.dir}/${ant.project.name}.war" webxml="${web.dir}/WEB-INF/web.xml">
+        <war warfile="${war.file}" webxml="${web.dir}/WEB-INF/web.xml">
             <classes dir="${classes.dir}"/>
             <lib dir="${lib.dir}">
-		<exclude name="servlet-api-2.5.jar"/>
-	</lib>
+                <exclude name="servlet-api-2.5.jar"/>
+            </lib>
             <fileset dir="${web.dir}">
                 <exclude name="${web.dir}/WEB-INF/web.xml"/>
             </fileset>
         </war>
+    </target>
+
+    <target name="expand" depends="war">
+        <unwar src="${war.file}" dest="${deploy.dir}"/>
     </target>
 
 </project>

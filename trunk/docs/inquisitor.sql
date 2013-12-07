@@ -9,7 +9,7 @@ SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
 DROP TABLE IF EXISTS `theme` ;
 
 CREATE  TABLE IF NOT EXISTS `theme` (
-  `id` INT NOT NULL ,
+  `id` INT NOT NULL AUTO_INCREMENT ,
   `name` VARCHAR(45) NULL ,
   PRIMARY KEY (`id`) )
 ENGINE = InnoDB;
@@ -21,7 +21,7 @@ ENGINE = InnoDB;
 DROP TABLE IF EXISTS `property` ;
 
 CREATE  TABLE IF NOT EXISTS `property` (
-  `id` INT NOT NULL ,
+  `id` INT NOT NULL AUTO_INCREMENT ,
   `theme_id` INT NOT NULL ,
   `name` VARCHAR(45) NULL ,
   PRIMARY KEY (`id`) ,
@@ -29,7 +29,7 @@ CREATE  TABLE IF NOT EXISTS `property` (
   CONSTRAINT `fk_property_theme`
     FOREIGN KEY (`theme_id` )
     REFERENCES `theme` (`id` )
-    ON DELETE NO ACTION
+    ON DELETE CASCADE
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
@@ -40,7 +40,7 @@ ENGINE = InnoDB;
 DROP TABLE IF EXISTS `property_value` ;
 
 CREATE  TABLE IF NOT EXISTS `property_value` (
-  `id` INT NOT NULL ,
+  `id` INT NOT NULL AUTO_INCREMENT ,
   `property_id` INT NOT NULL ,
   `name` VARCHAR(45) NULL ,
   PRIMARY KEY (`id`) ,
@@ -48,7 +48,7 @@ CREATE  TABLE IF NOT EXISTS `property_value` (
   CONSTRAINT `fk_property_value_property1`
     FOREIGN KEY (`property_id` )
     REFERENCES `property` (`id` )
-    ON DELETE NO ACTION
+    ON DELETE CASCADE
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
@@ -59,7 +59,7 @@ ENGINE = InnoDB;
 DROP TABLE IF EXISTS `item` ;
 
 CREATE  TABLE IF NOT EXISTS `item` (
-  `id` INT NOT NULL ,
+  `id` INT NOT NULL AUTO_INCREMENT ,
   `theme_id` INT NOT NULL ,
   `name` VARCHAR(45) NULL ,
   PRIMARY KEY (`id`) ,
@@ -102,7 +102,7 @@ ENGINE = InnoDB;
 DROP TABLE IF EXISTS `user` ;
 
 CREATE  TABLE IF NOT EXISTS `user` (
-  `id` INT NOT NULL ,
+  `id` INT NOT NULL AUTO_INCREMENT ,
   `name` VARCHAR(45) NULL ,
   `login` VARCHAR(45) NULL ,
   `password` VARCHAR(45) NULL ,
