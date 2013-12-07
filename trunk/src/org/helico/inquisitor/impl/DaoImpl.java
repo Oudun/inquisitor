@@ -1,6 +1,8 @@
 package org.helico.inquisitor.impl;
 
 import org.helico.inquisitor.Dao;
+import org.helico.inquisitor.model.Property;
+import org.helico.inquisitor.model.PropertyValue;
 import org.helico.inquisitor.model.Theme;
 import org.helico.inquisitor.util.Logger;
 
@@ -79,5 +81,90 @@ public class DaoImpl implements Dao {
         }
     }
 
+    /// Properties methods goes here
 
+    @Override
+    public List<Property> getProperties(String themeId) {
+        List<Property> result = new ArrayList<Property>();
+        try {
+            PreparedStatement ps = conn.prepareStatement("SELECT * FROM property WHERE theme_id=?");
+            ps.setString(1, themeId);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Property property = new Property (rs.getLong(1), rs.getLong(2), rs.getString(3));
+                result.add(property);
+            }
+        } catch (Exception e) {
+            logger.error("Can not prepare statement", e);
+        } finally {
+            return result;
+        }
+    }
+
+    @Override
+    public void saveProperty(String id, String themeId, String name) {
+        try {
+            PreparedStatement ps;
+            if (id==null||"null".equals(id)) {
+                ps = conn.prepareStatement("INSERT INTO property VALUES (NULL, ?, ?)");
+                ps.setInt(1, Integer.parseInt(themeId));
+                ps.setString(2, name);
+            } else {
+                ps = conn.prepareStatement("UPDATE property SET name=? WHERE id=?");
+                ps.setString(1, name);
+                ps.setString(2, id);
+            }
+            ps.execute();
+        } catch (Exception e) {
+            logger.error("Can not prepare statement", e);
+        }
+    }
+
+    @Override
+    public void deleteProperty(String id) {
+        try {
+            PreparedStatement ps = conn.prepareStatement("DELETE FROM property WHERE id=?");
+            ps.setString(1, id);
+            ps.execute();
+        } catch (Exception e) {
+            logger.error("Can not prepare statement", e);
+        }
+    }
+
+    @Override
+    public Property getProperty(String id) {
+        Property property = null;
+        try {
+            PreparedStatement ps = conn.prepareStatement("SELECT * FROM property WHERE id=?");
+            ps.setString(1, id);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                property = new Property (rs.getLong(1), rs.getLong(2), rs.getString(3));
+            }
+        } catch (Exception e) {
+            logger.error("Can not prepare statement", e);
+        } finally {
+            return property;
+        }
+    }
+
+    @Override
+    public List<PropertyValue> getPropertyValues(String themeId) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void savePropertyValue(String id, String themeId, String name) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void deletePropertyValue(String id) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public PropertyValue getPropertyValue(String id) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
 }
