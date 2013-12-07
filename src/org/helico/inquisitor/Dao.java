@@ -14,5 +14,7 @@ import java.util.List;
 public interface Dao {
 
     public List<Theme> getThemes();
+    public void saveTheme(String id, String name);
+    public void deleteTheme(String id);
 
 }
