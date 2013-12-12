@@ -7,12 +7,15 @@ import org.helico.inquisitor.model.PropertyValue;
 import org.helico.inquisitor.model.Theme;
 import org.helico.inquisitor.util.Logger;
 
+import javax.sql.RowSet;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -235,7 +238,7 @@ public class DaoImpl implements Dao {
     }
 
     @Override
-    public void saveItem(String id, String themeId, String name) {
+    public String saveItem(String id, String themeId, String name) {
         try {
             PreparedStatement ps;
             if (id==null||"null".equals(id)) {
@@ -248,14 +251,26 @@ public class DaoImpl implements Dao {
                 ps.setString(2, id);
             }
             ps.execute();
+            ps = conn.prepareStatement("SELECT LAST_INSERT_ID()");
+            ResultSet rs = ps.executeQuery();
+            rs.next();
+            Object obj = rs.getObject(1);
+            return String.valueOf((Long) obj);
         } catch (Exception e) {
             logger.error("Can not prepare statement", e);
+            return null;
         }
     }
 
     @Override
     public void deleteItem(String id) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        try {
+            PreparedStatement ps = conn.prepareStatement("DELETE FROM item WHERE id=?");
+            ps.setString(1, id);
+            ps.execute();
+        } catch (Exception e) {
+            logger.error("Can not prepare statement", e);
+        }
     }
 
     @Override
@@ -275,6 +290,72 @@ public class DaoImpl implements Dao {
         }
     }
 
+    @Override
+    public void deleteItemPropertyValues(String itemId) {
+        try {
+            PreparedStatement ps = conn.prepareStatement("DELETE FROM item_property_value WHERE item_id=?");
+            ps.setString(1, itemId);
+            ps.execute();
+        } catch (Exception e) {
+            logger.error("Can not prepare statement", e);
+        }
+    }
 
+    @Override
+    public void insertItemPropertyValue(String itemId, String propertyValueId) {
+        try {
+            PreparedStatement ps = conn.prepareStatement("INSERT INTO item_property_value values (?, ?)");
+            ps.setString(1, itemId);
+            ps.setString(2, propertyValueId);
+            ps.execute();
+        } catch (Exception e) {
+            logger.error("Can not prepare statement", e);
+        }
+    }
+
+    @Override
+    public Map<String, String> getItemPropertyValues(String itemId) {
+        Map<String, String> result = new HashMap<String, String>();
+        if (itemId==null) {
+            return result;
+        }
+        try {
+            PreparedStatement ps = conn.prepareStatement(
+                    "SELECT pv.property_id, ipv.property_value_id " +
+                            "FROM item_property_value ipv " +
+                            "INNER JOIN property_value pv on pv.id = ipv.property_value_id " +
+                            "WHERE ipv.item_id=?");
+            ps.setString(1, itemId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                result.put(String.valueOf(rs.getLong(1)), String.valueOf(rs.getLong(2)));
+            }
+        } catch (Exception e) {
+            logger.error("Can not prepare statement", e);
+        } finally {
+            return result;
+        }
+    }
+
+    @Override
+    public List<String> listItemPropertyValues(String itemId) {
+        List<String> result = new ArrayList<String>();
+        if (itemId==null) {
+            return result;
+        }
+        try {
+            PreparedStatement ps =
+                    conn.prepareStatement("SELECT property_value_id FROM item_property_value WHERE item_id=?");
+            ps.setString(1, itemId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                result.add(String.valueOf(rs.getLong(1)));
+            }
+        } catch (Exception e) {
+            logger.error("Can not prepare statement", e);
+        } finally {
+            return result;
+        }
+    }
 
 }

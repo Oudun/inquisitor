@@ -8,6 +8,7 @@
         itemName = item.getName();
     }
     List<Property> properties = dao.getProperties(request.getParameter("theme"));
+    List<String> list = dao.listItemPropertyValues(request.getParameter("item"));
 %>
 <h1>Create New Item</h1>
 <form action="items.jsp">
@@ -21,7 +22,11 @@
                 <select name="property_<%=property.getId()%>"><%
             List<PropertyValue> values = dao.getPropertyValues(String.valueOf(property.getId()));
             for (PropertyValue value : values) {
-                    %><option value=<%=value.getId()%>><%=value.getName()%></option><% } %>
+                String selected = "";
+                if (list.contains(String.valueOf(value.getId()))) {
+                    selected = "checked";
+                }
+                    %><option value=<%=value.getId()%> <%=selected%>><%=value.getName()%></option><% } %>
                 </select>
             </td>
         </tr>
