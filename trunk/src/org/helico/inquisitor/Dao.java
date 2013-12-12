@@ -5,7 +5,9 @@ import org.helico.inquisitor.model.Property;
 import org.helico.inquisitor.model.PropertyValue;
 import org.helico.inquisitor.model.Theme;
 
+import java.nio.channels.FileChannel;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -31,8 +33,12 @@ public interface Dao {
     public PropertyValue getPropertyValue(String id);
 
     public List<Item> getItems(String themeId);
-    public void saveItem(String id, String themeId, String name);
+    public String saveItem(String id, String themeId, String name);
     public void deleteItem(String id);
     public Item getItem(String id);
+    public void deleteItemPropertyValues(String itemId);
+    public void insertItemPropertyValue(String itemId, String propertyValueId);
+    public Map<String, String> getItemPropertyValues(String itemId);
+    public List<String> listItemPropertyValues(String itemId);
 
 }
