@@ -12,7 +12,7 @@
         for (Object name : request.getParameterMap().keySet()) {
             String nameStr = (String)name;
             if (nameStr.startsWith("property_")) {
-                dao.insertItemPropertyValue(request.getParameter("theme"), request.getParameter(nameStr));
+                dao.insertItemPropertyValue(request.getParameter("item"), request.getParameter(nameStr));
             }
         }
     }
