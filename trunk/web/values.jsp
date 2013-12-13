@@ -20,7 +20,7 @@
         </td>
         <td><a href="values.jsp?value=<%=value.getId()%>">
             View Values</td>
-        <td><a href="value_create.jsp?theme=<%=value.getPropertyId()%>&value=<%=value.getId()%>">
+        <td><a href="value_create.jsp?property=<%=value.getPropertyId()%>&value=<%=value.getId()%>">
             Edit value</a></td>
 
     </tr>
