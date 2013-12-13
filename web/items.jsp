@@ -3,8 +3,8 @@
 <%
     Dao dao = new DaoImpl();
     if ("delete".equals(request.getParameter("action"))) {
-        dao.deleteItem(request.getParameter("item"));
         dao.deleteItemPropertyValues(request.getParameter("item"));
+        dao.deleteItem(request.getParameter("item"));
     } else if("save".equals(request.getParameter("action"))){
         String itemId = dao.saveItem(request.getParameter("item"),
             request.getParameter("theme"), request.getParameter("name"));
@@ -12,7 +12,7 @@
         for (Object name : request.getParameterMap().keySet()) {
             String nameStr = (String)name;
             if (nameStr.startsWith("property_")) {
-                dao.insertItemPropertyValue(request.getParameter("item"), request.getParameter(nameStr));
+                dao.insertItemPropertyValue(itemId, request.getParameter(nameStr));
             }
         }
     }

@@ -24,7 +24,7 @@
             for (PropertyValue value : values) {
                 String selected = "";
                 if (list.contains(String.valueOf(value.getId()))) {
-                    selected = "checked";
+                    selected = "selected";
                 }
                     %><option value=<%=value.getId()%> <%=selected%>><%=value.getName()%></option><% } %>
                 </select>
