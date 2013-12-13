@@ -239,26 +239,29 @@ public class DaoImpl implements Dao {
 
     @Override
     public String saveItem(String id, String themeId, String name) {
+        String itemId = id;
         try {
             PreparedStatement ps;
             if (id==null||"null".equals(id)) {
                 ps = conn.prepareStatement("INSERT INTO item VALUES (NULL, ?, ?)");
                 ps.setInt(1, Integer.parseInt(themeId));
                 ps.setString(2, name);
+                ps.execute();
+                ps = conn.prepareStatement("SELECT LAST_INSERT_ID()");
+                ResultSet rs = ps.executeQuery();
+                rs.next();
+                Object obj = rs.getObject(1);
+                itemId = String.valueOf((Long) obj);
             } else {
                 ps = conn.prepareStatement("UPDATE item SET name=? WHERE id=?");
                 ps.setString(1, name);
                 ps.setString(2, id);
+                ps.execute();
             }
-            ps.execute();
-            ps = conn.prepareStatement("SELECT LAST_INSERT_ID()");
-            ResultSet rs = ps.executeQuery();
-            rs.next();
-            Object obj = rs.getObject(1);
-            return String.valueOf((Long) obj);
         } catch (Exception e) {
             logger.error("Can not prepare statement", e);
-            return null;
+        } finally {
+            return itemId;
         }
     }
 
