@@ -1,10 +1,7 @@
 package org.helico.inquisitor.impl;
 
 import org.helico.inquisitor.Dao;
-import org.helico.inquisitor.model.Item;
-import org.helico.inquisitor.model.Property;
-import org.helico.inquisitor.model.PropertyValue;
-import org.helico.inquisitor.model.Theme;
+import org.helico.inquisitor.model.*;
 import org.helico.inquisitor.util.Logger;
 
 import javax.sql.RowSet;
@@ -33,9 +30,26 @@ public class DaoImpl implements Dao {
     public DaoImpl () {
         try {
             Class.forName("com.mysql.jdbc.Driver");
-            conn = DriverManager.getConnection("jdbc:mysql://localhost/asker", "root", "admin");
+            conn = DriverManager.getConnection("jdbc:mysql://localhost/inquisitor", "root", "admin");
         } catch (Exception e) {
             logger.error("Can not create connection", e);
+        }
+    }
+
+    @Override
+    public Theme getTheme(String id) {
+        Theme theme = null;
+        try {
+            PreparedStatement ps = conn.prepareStatement("SELECT * FROM theme WHERE id=?");
+            ps.setString(1, id);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                theme = new Theme (rs.getLong(1), rs.getString(2));
+            }
+        } catch (Exception e) {
+            logger.error("Can not prepare statement", e);
+        } finally {
+            return theme;
         }
     }
 
@@ -317,30 +331,6 @@ public class DaoImpl implements Dao {
     }
 
     @Override
-    public Map<String, String> getItemPropertyValues(String itemId) {
-        Map<String, String> result = new HashMap<String, String>();
-        if (itemId==null) {
-            return result;
-        }
-        try {
-            PreparedStatement ps = conn.prepareStatement(
-                    "SELECT pv.property_id, ipv.property_value_id " +
-                            "FROM item_property_value ipv " +
-                            "INNER JOIN property_value pv on pv.id = ipv.property_value_id " +
-                            "WHERE ipv.item_id=?");
-            ps.setString(1, itemId);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                result.put(String.valueOf(rs.getLong(1)), String.valueOf(rs.getLong(2)));
-            }
-        } catch (Exception e) {
-            logger.error("Can not prepare statement", e);
-        } finally {
-            return result;
-        }
-    }
-
-    @Override
     public List<String> listItemPropertyValues(String itemId) {
         List<String> result = new ArrayList<String>();
         if (itemId==null) {
@@ -351,7 +341,7 @@ public class DaoImpl implements Dao {
                     conn.prepareStatement("SELECT property_value_id FROM item_property_value WHERE item_id=?");
             ps.setString(1, itemId);
             ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
+            while (rs.next()) {
                 result.add(String.valueOf(rs.getLong(1)));
             }
         } catch (Exception e) {
@@ -361,4 +351,63 @@ public class DaoImpl implements Dao {
         }
     }
 
+    @Override
+    public List<ItemPropertyValue> getCorrectAnswers(String themeId) {
+        List<ItemPropertyValue> result = new ArrayList<ItemPropertyValue>();
+        try {
+            PreparedStatement ps =
+                    conn.prepareStatement("SELECT ipv.item_id, ipv.property_value_id FROM item_property_value ipv " +
+                            "INNER JOIN item i on i.id=ipv.item_id WHERE i.theme_id=?");
+            ps.setString(1, themeId);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                ItemPropertyValue itemPropertyValue = new ItemPropertyValue(rs.getLong(1), rs.getLong(2));
+                result.add(itemPropertyValue);
+            }
+        } catch (Exception e) {
+            logger.error("Can not prepare statement", e);
+        } finally {
+            return result;
+        }
+    }
+
+    @Override
+    public List<ItemPropertyValue> getAllAnswers(String themeId) {
+        List<ItemPropertyValue> result = new ArrayList<ItemPropertyValue>();
+        try {
+            PreparedStatement psItems =
+                    conn.prepareStatement("SELECT id FROM item WHERE theme_id=?");
+            psItems.setString(1, themeId);
+            ResultSet rsItems = psItems.executeQuery();
+
+            PreparedStatement psPropertyValue =
+                    conn.prepareStatement("SELECT pv.id FROM property_value pv " +
+                            "INNER JOIN property p on p.id=pv.property_id WHERE p.theme_id=?");
+            psPropertyValue.setString(1, themeId);
+            ResultSet rsPropertyValues = psPropertyValue.executeQuery();
+
+            List<Long> items = new ArrayList<Long>();
+            List<Long> propertyValues = new ArrayList<Long>();
+
+            while (rsItems.next()) {
+                items.add(rsItems.getLong(1));
+            }
+
+            while (rsPropertyValues.next())  {
+                propertyValues.add(rsPropertyValues.getLong(1));
+            }
+
+            for (Long itemId : items) {
+                for (Long propertyValueId : propertyValues) {
+                    ItemPropertyValue itemPropertyValue =
+                            new ItemPropertyValue(itemId, propertyValueId);
+                    result.add(itemPropertyValue);
+                }
+            }
+        } catch (Exception e) {
+            logger.error("Can not prepare statement", e);
+        } finally {
+            return result;
+        }
+    }
 }

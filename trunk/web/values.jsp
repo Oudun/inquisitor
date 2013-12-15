@@ -1,5 +1,4 @@
 <%@ include file="top.jsp"%>
-<h1>Values</h1>
 <%
     Dao dao = new DaoImpl();
     if ("delete".equals(request.getParameter("action"))) {
@@ -7,14 +6,18 @@
     } else if("save".equals(request.getParameter("action"))){
         dao.savePropertyValue(request.getParameter("value"), request.getParameter("property"), request.getParameter("name"));
     }
+    Property property = dao.getProperty(request.getParameter("property"));
+    Theme theme = dao.getTheme(String.valueOf(property.getThemeId()));
     List<PropertyValue> values = dao.getPropertyValues(request.getParameter("property"));
 %>
+<h1><a href="properties.jsp?theme=<%=theme.getId()%>"><%=theme.getName()%></a>&nbsp;&gt;&nbsp;
+<a href="values.jsp?property=<%=property.getId()%>"><%=property.getName()%></a>&nbsp;&gt;&nbsp;Values</h1>
 <table>
     <%
         for (PropertyValue value : values) {
     %>
     <tr>
-        <td width="480"><b><%=value.getName()%></b></td>
+        <td><b><%=value.getName()%></b></td>
         <td><a href="values.jsp?action=delete&value=<%=value.getId()%>&property=<%=value.getPropertyId()%>">
             Delete</a>
         </td>
